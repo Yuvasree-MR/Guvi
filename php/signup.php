@@ -8,17 +8,33 @@ if($_SERVER["REQUEST_METHOD"] == "POST")
   $email = $_POST["email"];
   $password = $_POST["password"];
   $confirmPassword = $_POST["confirmPassword"];
-  $exists =false;
-  if(($password == $confirmPassword) && $exists == false ){
-    $sql = "INSERT INTO `users` (`userName`, `email`, `password`, `date`) VALUES ('$userName', '$email', '$password', CURRENT_TIMESTAMP())";
-    $result = mysqli_query($conn, $sql);
-    if($result){
-      $showAlert = true;
-    }
-}
-else{
-  $showError = "Password doesn't match";
-}
+  // $exists = false;
+
+  // to check whether the emailid exists
+  $existSql = "SELECT * FROM `users` WHERE email = '$email'";
+  $result = mysqli_query($conn, $existSql);
+  $numExistRows = mysqli_num_rows($result);
+  if($numExistRows > 0)
+  {
+    // $exists = true;
+    $showError = "Email Already Exists";
+
+  }
+  else{
+    // $exists = false;
+
+        if(($password == $confirmPassword) ){
+          $hash = password_hash($password, PASSWORD_DEFAULT);
+          $sql = "INSERT INTO `users` (`userName`, `email`, `password`, `date`) VALUES ('$userName', '$email', '$hash', CURRENT_TIMESTAMP())";
+          $result = mysqli_query($conn, $sql);
+          if($result){
+            $showAlert = true;
+          }
+      }
+      else{
+        $showError = "Password doesn't match";
+      }
+  }
 }
 ?>
 
@@ -39,7 +55,7 @@ else{
 if($showAlert){
 echo '
   <div class="alert alert-success alert-dismissible fade show" role="alert">
-  <strong>Success! </strong>Your Account is now Created and you can Login.
+  <strong>Success!</strong>Your Account is now Created and you can Login.
   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 </div>';
 }
@@ -76,7 +92,7 @@ if($showError){
                     <i class="fas fa-user fa-lg me-3 fa-fw"></i>
                     <div data-mdb-input-init class="form-outline flex-fill mb-0">
                       <label class="form-label" for="userName">Name</label>
-                      <input type="text" id="userName" name="userName" placeholder="Enter your Name" class="form-control" />
+                      <input type="text" maxlength="50" id="userName" name="userName" placeholder="Enter your Name" class="form-control" />
                     </div>
                   </div>
 
@@ -84,7 +100,7 @@ if($showError){
                     <i class="fas fa-envelope fa-lg me-3 fa-fw"></i>
                     <div data-mdb-input-init class="form-outline flex-fill mb-0">
                       <label class="form-label" for="email">Email</label>
-                      <input type="email" id="email" name="email" placeholder="Enter your Email"class="form-control" aria-describedby="emailHelp" placeholder="Enter email"/>
+                      <input type="email" maxlength="50" id="email" name="email" placeholder="Enter your Email"class="form-control" aria-describedby="emailHelp" placeholder="Enter email"/>
 
                       <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
                       
@@ -95,7 +111,7 @@ if($showError){
                     <i class="fas fa-lock fa-lg me-3 fa-fw"></i>
                     <div data-mdb-input-init class="form-outline flex-fill mb-0">
                       <label class="form-label" for="password">Password</label>
-                      <input type="password" id="password" name="password" class="form-control" placeholder="Enter Your Password" aria-describedby="passwordPattern"/>
+                      <input type="password" maxlength="30" id="password" name="password" class="form-control" placeholder="Enter Your Password" aria-describedby="passwordPattern"/>
 
                       <small id="passwordPattern" class="form-text text-muted">Your password must contain 1 Uppercase, 1 Lowercase and a Special Chatracter.</small>
 

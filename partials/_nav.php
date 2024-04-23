@@ -1,3 +1,14 @@
+<?php
+
+if(isset($_SESSION['loggedin']) && $_SESSION['loggedin'] == true)
+{
+  $loggedin = true;
+}
+else{
+  $loggedin=false;
+}
+
+echo'
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
   <div class="container-fluid">
     <a class="navbar-brand" href="/Register">Guvi</a>
@@ -8,19 +19,33 @@
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
           <a class="nav-link active" aria-current="page" href="/Guvi/php/welcome.php">Home</a>
-        </li>
+        </li>';
+
+        if(!$loggedin){
+        echo
+        '
         <li class="nav-item">
           <a class="nav-link" href="/Guvi/php/login.php">Login</a>
         </li>
+
         <li class="nav-item">
           <a class="nav-link" href="/Guvi/php/signup.php">SignUp</a>
-        </li>
+        </li>';
+        }
+
+        if($loggedin){
+        echo '
         <li class="nav-item">
           <a class="nav-link" href="/Guvi/php/logout.php">Logout</a>
-        </li>
-      
+        </li>';
+        }
+
+
+        echo '
       </ul>
       
     </div>
   </div>
 </nav>
+';
+?>
